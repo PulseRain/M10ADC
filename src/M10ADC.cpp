@@ -206,7 +206,7 @@ static uint16_t ADC_TSD_Lookup[ADC_TSD_TABLE_SIZE] = {
 //      Function to convert ADC value from TSD channel to degree Celsius
 //----------------------------------------------------------------------------
 
-static int16_t ADC_TSD_table_search(uint16_t value)
+static int16_t ADC_TSD_table_search(uint16_t value) __reentrant
 {
    int16_t ret;
    
@@ -249,7 +249,7 @@ static int16_t ADC_TSD_table_search(uint16_t value)
 //      set the active channel for ADC
 //----------------------------------------------------------------------------
 
-static void ADC_set_active_channel (uint8_t channel_index)
+static void ADC_set_active_channel (uint8_t channel_index) __reentrant
 {
   uint8_t csr = (channel_index << ADC_CHANNEL_INDEX_SHIFT) + ADC_ENABLE_BIT;
 
@@ -278,7 +278,7 @@ static void ADC_set_active_channel (uint8_t channel_index)
 //      disable all ADC channels
 //----------------------------------------------------------------------------
 
-static void ADC_disable()
+static void ADC_disable() __reentrant
 {
   ADC_CSR = 0;
 } // End of ADC_disable()
@@ -297,7 +297,7 @@ static void ADC_disable()
 //      read data from the active ADC channel 
 //----------------------------------------------------------------------------
 
-static uint16_t ADC_read_data ()
+static uint16_t ADC_read_data () __reentrant
 {
   uint8_t high, low;
   uint16_t ret;
@@ -337,7 +337,7 @@ static uint16_t ADC_read_data ()
 //      Function to calibrate the ADC
 //----------------------------------------------------------------------------
 
-static void ADC_recalibration()
+static void ADC_recalibration() __reentrant
 {
   ADC_set_active_channel (ADC_RECALIBRATION_CHANNEL);
   ADC_read_data();
