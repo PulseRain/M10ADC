@@ -249,7 +249,7 @@ static int16_t ADC_TSD_table_search(uint16_t value) __reentrant
 //      set the active channel for ADC
 //----------------------------------------------------------------------------
 
-static void ADC_set_active_channel (uint8_t channel_index) __reentrant
+static void ADC_set_active_channel (uint8_t channel_index) 
 {
   uint8_t csr = (channel_index << ADC_CHANNEL_INDEX_SHIFT) + ADC_ENABLE_BIT;
 
@@ -297,7 +297,7 @@ static void ADC_disable() __reentrant
 //      read data from the active ADC channel 
 //----------------------------------------------------------------------------
 
-static uint16_t ADC_read_data () __reentrant
+static uint16_t ADC_read_data () 
 {
   uint8_t high, low;
   uint16_t ret;
@@ -358,10 +358,9 @@ static void ADC_recalibration() __reentrant
 //      Function to calibrate the ADC
 //----------------------------------------------------------------------------
 
-uint16_t analogRead(uint8_t channel_index)
+uint16_t analogRead(uint8_t channel_index) 
 {
     uint16_t t;
-     
     ADC_set_active_channel(channel_index + 1);
     t = ADC_read_data();
     return t;
