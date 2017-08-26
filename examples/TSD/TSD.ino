@@ -32,37 +32,34 @@ void setup() {
    delay(1000);
    Serial.begin(115200);
    ADC.begin();
+   ADC.getCelsius();
    
 } // End of setup() 
 
 void loop() {
-   uint16_t adc_value;
+
    int16_t temp;
 
    uint32_t sec;
    uint32_t ms;
-  
+      
    delay(1000);
    
+   temp = ADC.getCelsius();
+     
    ms = millis();
    sec = ms / 1000;
    ms -= sec * 1000;
-
-   adc_value = analogRead (ADC_TEMP_SENSOR_CHANNEL);
-   temp = ADC.getCelsius(adc_value);
-
-   //adc_value = analogRead (0);
-
+    
    Serial.write ("Time: ");
    Serial.print (sec, DEC);
    Serial.write (".");
    Serial.print (ms, DEC);
    Serial.write (" second, \tTemperature: ");
    Serial.print(temp, DEC);
-   Serial.write (" Degree C (ADC=");
+   Serial.write (" Degree C ");
 
-   Serial.print (adc_value, DEC);
-   Serial.write(")\n\n");
+   Serial.write("\n\n");
    
 } // End of loop()
 
