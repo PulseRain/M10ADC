@@ -39,8 +39,8 @@ extern uint16_t analogRead(uint8_t channel_index);
 
 typedef struct {
     void (*begin)() __reentrant;
-    uint16_t (*read) (uint8_t index) ;
-    int16_t (*getCelsius)(uint16_t value) __reentrant;
+    uint16_t (*read) (uint8_t index) __reentrant;
+    int16_t (*getCelsius)() ;
     void (*end)() __reentrant;
 }ADC_STRUCT;
 

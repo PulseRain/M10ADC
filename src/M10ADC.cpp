@@ -194,49 +194,6 @@ static uint16_t ADC_TSD_Lookup[ADC_TSD_TABLE_SIZE] = {
 
 
 //----------------------------------------------------------------------------
-// ADC_TSD_table_search()
-//
-// Parameters:
-//      value : value read from ADC TSD channel
-//
-// Return Value:
-//      converted value in degree Celsius
-//
-// Remarks:
-//      Function to convert ADC value from TSD channel to degree Celsius
-//----------------------------------------------------------------------------
-
-static int16_t ADC_TSD_table_search(uint16_t value) __reentrant
-{
-   int16_t ret;
-   
-   uint16_t left, right, index, t;
-
-   left = 0;
-   right = ADC_TSD_TABLE_SIZE - 1;
-    
-   do {
-     
-     index = (left + right + 1) >> 1;
-
-     t = ADC_TSD_Lookup[index];
-     
-     if ( t > value) {
-        left = index;
-     } else if (t < value) {
-        right = index;
-     } else {
-        break;
-     }
-   } while ((left + 1) < right);
-   
-   ret = (int16_t)index - 40;
-
-   return ret;
-  
-} // End of ADC_TSD_table_search()
-
-//----------------------------------------------------------------------------
 // ADC_set_active_channel()
 //
 // Parameters:
@@ -249,7 +206,7 @@ static int16_t ADC_TSD_table_search(uint16_t value) __reentrant
 //      set the active channel for ADC
 //----------------------------------------------------------------------------
 
-static void ADC_set_active_channel (uint8_t channel_index) 
+static void ADC_set_active_channel (uint8_t channel_index) __reentrant
 {
   uint8_t csr = (channel_index << ADC_CHANNEL_INDEX_SHIFT) + ADC_ENABLE_BIT;
 
@@ -315,7 +272,10 @@ static uint16_t ADC_read_data ()
   __asm__ ("nop");
   
   while (!(ADC_CSR & ADC_DATA_READY_FLAG));
-
+  __asm__ ("nop");
+  __asm__ ("nop");
+  __asm__ ("nop");
+  
   high = ADC_DATA_HIGH;
   low  = ADC_DATA_LOW;
   
@@ -358,7 +318,7 @@ static void ADC_recalibration() __reentrant
 //      Function to calibrate the ADC
 //----------------------------------------------------------------------------
 
-uint16_t analogRead(uint8_t channel_index) 
+uint16_t analogRead(uint8_t channel_index) __reentrant
 {
     uint16_t t;
     ADC_set_active_channel(channel_index + 1);
@@ -367,6 +327,73 @@ uint16_t analogRead(uint8_t channel_index)
     
 } // End of analogRead()
 
+
+//----------------------------------------------------------------------------
+// ADC_TSD_table_search()
+//
+// Parameters:
+//      value : value read from ADC TSD channel
+//
+// Return Value:
+//      converted value in degree Celsius
+//
+// Remarks:
+//      Function to convert ADC value from TSD channel to degree Celsius
+//----------------------------------------------------------------------------
+
+static int16_t ADC_TSD_table_search() 
+{
+   int16_t ret;
+   
+   uint16_t left, right, index, t;
+
+   uint16_t value;
+   
+    ADC_set_active_channel(ADC_TEMP_SENSOR_CHANNEL + 1);
+    
+    __asm__ ("nop");
+    __asm__ ("nop");
+    __asm__ ("nop");
+    
+    for (index = 0; index < 65535; ++index) {
+        __asm__ ("nop");
+    }
+
+    __asm__ ("nop");
+    __asm__ ("nop");
+    __asm__ ("nop");
+    
+    value = ADC_read_data();
+    
+    __asm__ ("nop");
+    __asm__ ("nop");
+    __asm__ ("nop");
+    
+   ADC_CSR = 0;
+   
+   left = 0;
+   right = ADC_TSD_TABLE_SIZE - 1;
+    
+   do {
+     
+     index = (left + right + 1) >> 1;
+
+     t = ADC_TSD_Lookup[index];
+     
+     if ( t > value) {
+        left = index;
+     } else if (t < value) {
+        right = index;
+     } else {
+        break;
+     }
+   } while ((left + 1) < right);
+   
+   ret = (int16_t)index - 40;
+
+   return ret;
+  
+} // End of ADC_TSD_table_search()
 
 
 const ADC_STRUCT ADC = {ADC_recalibration,     // begin
