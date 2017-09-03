@@ -35,7 +35,7 @@
 #define ADC_RECALIBRATION_CHANNEL  30
 
 
-extern uint16_t analogRead(uint8_t channel_index);
+extern uint16_t analogRead(uint8_t channel_index) __reentrant;
 
 typedef struct {
     void (*begin)() __reentrant;
