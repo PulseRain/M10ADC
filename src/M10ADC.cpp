@@ -315,7 +315,7 @@ static void ADC_recalibration() __reentrant
 //      None
 //
 // Remarks:
-//      Function to calibrate the ADC
+//      Function to read the value of the ADC channel
 //----------------------------------------------------------------------------
 
 uint16_t analogRead(uint8_t channel_index) __reentrant
